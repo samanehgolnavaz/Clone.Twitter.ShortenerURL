@@ -16,7 +16,7 @@ public class UrlShortenerService : IUrlShortenerService
     }
     public async Task<string?> GetLognUrlAsync(string shortenCode, CancellationToken cancellationToken)
     {
-        var tag = await _tagsRepository.FindByLongUrlAsync(shortenCode, cancellationToken);
+        var tag = await _tagsRepository.FindByShortenCodeAsync(shortenCode, cancellationToken);
         return tag?.LongUrl;
     }
 
