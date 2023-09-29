@@ -14,9 +14,10 @@ public class UrlShortenerService : IUrlShortenerService
         _setting = setting.Value;
         _tagsRepository = tagsRepository;
     }
-    public async Task<string> GetLognUrlAsync(string shortenCode, CancellationToken cancellationToken)
+    public async Task<string?> GetLognUrlAsync(string shortenCode, CancellationToken cancellationToken)
     {
-        return  _urls.GetValueOrDefault(shortenCode);
+        var tag = await _tagsRepository.FindByLongUrlAsync(shortenCode, cancellationToken);
+        return tag?.LongUrl;
     }
 
     public async Task<string> GetShortenUrlAsync(string longUrl, CancellationToken cancellationToken = default)
@@ -24,6 +25,7 @@ public class UrlShortenerService : IUrlShortenerService
         var tag=await _tagsRepository.FindByLongUrlAsync(longUrl, cancellationToken);
         if (tag != null) return GenerateShorenUrl(tag.ShortenCode);
         var shortenCode = await GenerateUniqueCodeAsync(longUrl,cancellationToken) ;
+        //use factory method
         var newTag= Tag.Create(shortenCode, longUrl, DateTime.UtcNow.AddDays(_setting.ExpirationInDays));
         await _tagsRepository.InsertAsync(newTag);
 
