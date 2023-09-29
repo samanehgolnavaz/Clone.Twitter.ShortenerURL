@@ -1,5 +1,6 @@
 ﻿//Microsoft
 global using Microsoft.Extensions.Options;
+global using Microsoft.Extensions.Caching.Memory;
 global using Microsoft.EntityFrameworkCore;
 
 //Third-Party

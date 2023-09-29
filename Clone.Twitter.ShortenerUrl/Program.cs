@@ -1,4 +1,5 @@
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddMemoryCache();
 builder.Services.AddDbContext<ShortenerDbContext>(configure =>
 {
     configure.UseSqlServer(builder.Configuration.GetConnectionString(ShortenerDbContext.ConnectionStringName));
