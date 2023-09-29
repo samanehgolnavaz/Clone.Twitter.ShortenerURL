@@ -1,4 +1,5 @@
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddMemoryCache();
 builder.Services.AddDbContext<ShortenerDbContext>(configure =>
 {
     configure.UseSqlServer(builder.Configuration.GetConnectionString(ShortenerDbContext.ConnectionStringName));
@@ -18,7 +19,12 @@ app.MapGet("{shortenCode}", async (
     [FromRoute] string shortenCode,
     IUrlShortenerService service) =>
 {
-    return Results.Redirect( await service.GetLognUrlAsync(shortenCode));
+    var longUrl=await service.GetLognUrlAsync(shortenCode); 
+    if(string.IsNullOrEmpty(longUrl))
+    {
+        return Results.NotFound();
+    }
+    return Results.Redirect(longUrl);
 });
 app.UseSwagger();
 app.UseSwaggerUI();
